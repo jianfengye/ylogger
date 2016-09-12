@@ -30,5 +30,6 @@ ylogger.Trace("job.nextTime", this.Id)
 
 调用函数第一个参数为分类，为了能分类出需要的错误信息
 
-
 从第二个参数到后面的参数为可变参数
+
+更多使用例子可以参考 logger_test.go
