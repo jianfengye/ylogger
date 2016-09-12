@@ -14,7 +14,7 @@
 * trace
 * info
 * warning
-* err
+* error
 * debug
 
 其中每个级别都可以进行Enable和Disable
