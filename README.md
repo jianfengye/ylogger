@@ -17,7 +17,10 @@
 * error
 * debug
 
-其中每个级别都可以进行Enable和Disable
+其中每个级别都可以进行Enable和Disable(默认每个级别都是开启显示的)
+```
+ylogger.Disable("debug")
+```
 
 具体使用例子：
 
