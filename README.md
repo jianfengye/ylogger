@@ -17,15 +17,15 @@
 * error
 * debug
 
-其中每个级别都可以进行Enable和Disable(默认每个级别都是开启显示的)
+其中每个级别都可以进行Enable和Disable(默认每个级别都是关闭显示的)
 ```
-ylogger.Disable("debug")
+ylogger.Enable("debug")
 ```
 
 具体使用例子：
 
 ```
-import "github.com/jianfengye/ylogger"
+import "github.com/go-wave/ylogger"
 
 ylogger.Warning("job.nextTime", this.Id, "timeing is empty")
 ylogger.Trace("job.nextTime", this.Id)

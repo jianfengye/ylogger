@@ -1,10 +1,11 @@
 package ylogger
 
 import (
-	"fmt"
 	"io"
 	"log"
 )
+
+var LEVELS = []string{"trace", "info", "warning", "error", "debug"}
 
 type YLogger struct {
 	trace   *log.Logger
@@ -20,64 +21,53 @@ type YLogger struct {
 	debug_s   bool
 }
 
-const (
-	FgBlack = iota + 30
-	FgRed
-	FgGreen
-	FgYellow
-	FgBlue
-	FgMagenta
-	FgCyan
-	FgWhite
-)
-
 // create new YLogger
 // this out is work for all trace/info/warning/error/debug
 func NewYLogger(out io.Writer) *YLogger {
 	flag := log.Ldate | log.Ltime | log.Lmicroseconds | log.Lshortfile
 	ylogger := new(YLogger)
-	ylogger.trace = log.New(out, fmt.Sprintf("\x1b[%dm%s\x1b[0m", FgYellow, "[TRACE] "), flag)
-	ylogger.info = log.New(out, fmt.Sprintf("\x1b[%dm%s\x1b[0m", FgGreen, "[INFO] "), flag)
-	ylogger.warning = log.New(out, fmt.Sprintf("\x1b[%dm%s\x1b[0m", FgBlue, "[WARNING] "), flag)
-	ylogger.err = log.New(out, fmt.Sprintf("\x1b[%dm%s\x1b[0m", FgRed, "[ERROR] "), flag)
-	ylogger.debug = log.New(out, fmt.Sprintf("\x1b[%dm%s\x1b[0m", FgMagenta, "[DEBUG] "), flag)
+	ylogger.trace = log.New(out, "[TRACE] ", flag)
+	ylogger.info = log.New(out, "[INFO] ", flag)
+	ylogger.warning = log.New(out, "[WARNING] ", flag)
+	ylogger.err = log.New(out, "[ERROR] ", flag)
+	ylogger.debug = log.New(out, "[DEBUG] ", flag)
 
-	ylogger.trace_s = true
-	ylogger.info_s = true
-	ylogger.warning_s = true
-	ylogger.err_s = true
-	ylogger.debug_s = true
+	ylogger.trace_s = false
+	ylogger.info_s = false
+	ylogger.warning_s = false
+	ylogger.err_s = false
+	ylogger.debug_s = false
 	return ylogger
 }
 
 // output:
 func (this *YLogger) Debug(class string, v ...interface{}) {
 	if this.debug_s {
-		this.debug.Output(2, fmt.Sprint(fmt.Sprintf("\x1b[%dm%s\x1b[0m", FgGreen, class), " ", v))
+		this.debug.Output(2, class, " ", v)
 	}
 }
 
 func (this *YLogger) Info(class string, v ...interface{}) {
 	if this.info_s {
-		this.info.Output(2, fmt.Sprint(fmt.Sprintf("\x1b[%dm%s\x1b[0m", FgGreen, class), " ", v))
+		this.info.Output(2, class, " ", v)
 	}
 }
 
 func (this *YLogger) Trace(class string, v ...interface{}) {
 	if this.trace_s {
-		this.trace.Output(2, fmt.Sprint(fmt.Sprintf("\x1b[%dm%s\x1b[0m", FgGreen, class), " ", v))
+		this.trace.Output(2, class, " ", v)
 	}
 }
 
 func (this *YLogger) Warning(class string, v ...interface{}) {
 	if this.warning_s {
-		this.warning.Output(2, fmt.Sprint(fmt.Sprintf("\x1b[%dm%s\x1b[0m", FgGreen, class), " ", v))
+		this.warning.Output(2, class, " ", v)
 	}
 }
 
 func (this *YLogger) Error(class string, v ...interface{}) {
 	if this.err_s {
-		this.err.Output(2, fmt.Sprint(fmt.Sprintf("\x1b[%dm%s\x1b[0m", FgGreen, class), " ", v))
+		this.err.Output(2, class, " ", v)
 	}
 }
 
