@@ -1,6 +1,7 @@
 package ylogger
 
 import (
+	"fmt"
 	"io"
 	"log"
 )
@@ -26,11 +27,11 @@ type YLogger struct {
 func NewYLogger(out io.Writer) *YLogger {
 	flag := log.Ldate | log.Ltime | log.Lmicroseconds | log.Lshortfile
 	ylogger := new(YLogger)
-	ylogger.trace = log.New(out, "[TRACE] ", flag)
-	ylogger.info = log.New(out, "[INFO] ", flag)
-	ylogger.warning = log.New(out, "[WARNING] ", flag)
-	ylogger.err = log.New(out, "[ERROR] ", flag)
-	ylogger.debug = log.New(out, "[DEBUG] ", flag)
+	ylogger.trace = log.New(out, "\033[32m[TRACE]\033[0m ", flag)
+	ylogger.info = log.New(out, "\033[32m[INFO]\033[0m ", flag)
+	ylogger.warning = log.New(out, "\033[33m[WARNING]\033[0m ", flag)
+	ylogger.err = log.New(out, "\033[31m[ERROR]\033[0m ", flag)
+	ylogger.debug = log.New(out, "\033[32m[DEBUG]\033[0m ", flag)
 
 	ylogger.trace_s = false
 	ylogger.info_s = false
@@ -43,31 +44,31 @@ func NewYLogger(out io.Writer) *YLogger {
 // output:
 func (this *YLogger) Debug(class string, v ...interface{}) {
 	if this.debug_s {
-		this.debug.Output(2, class, " ", v)
+		this.debug.Output(2, fmt.Sprint(class, " ", v))
 	}
 }
 
 func (this *YLogger) Info(class string, v ...interface{}) {
 	if this.info_s {
-		this.info.Output(2, class, " ", v)
+		this.info.Output(2, fmt.Sprint(class, " ", v))
 	}
 }
 
 func (this *YLogger) Trace(class string, v ...interface{}) {
 	if this.trace_s {
-		this.trace.Output(2, class, " ", v)
+		this.trace.Output(2, fmt.Sprint(class, " ", v))
 	}
 }
 
 func (this *YLogger) Warning(class string, v ...interface{}) {
 	if this.warning_s {
-		this.warning.Output(2, class, " ", v)
+		this.warning.Output(2, fmt.Sprint(class, " ", v))
 	}
 }
 
 func (this *YLogger) Error(class string, v ...interface{}) {
 	if this.err_s {
-		this.err.Output(2, class, " ", v)
+		this.err.Output(2, fmt.Sprint(class, " ", v))
 	}
 }
 
@@ -112,6 +113,12 @@ func (this *YLogger) Enable(level string) {
 	case "warning":
 		this.warning_s = true
 	case "error":
+		this.err_s = true
+	case "all":
+		this.trace_s = true
+		this.debug_s = true
+		this.info_s = true
+		this.warning_s = true
 		this.err_s = true
 	}
 }
