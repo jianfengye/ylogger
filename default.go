@@ -38,3 +38,7 @@ func Disable(level string) {
 func Enable(level string) {
 	DefaultYLogger.Enable(level)
 }
+
+func Close() {
+
+}

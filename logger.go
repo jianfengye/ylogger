@@ -8,6 +8,19 @@ import (
 
 var LEVELS = []string{"trace", "info", "warning", "error", "debug"}
 
+type ILogger interface {
+	Debug(class string, v ...interface{})
+	Trace(class string, v ...interface{})
+	Info(class string, v ...interface{})
+	Warning(class string, v ...interface{})
+	Error(class string, v ...interface{})
+
+	Disable(level string)
+	Enable(level string)
+
+	Close()
+}
+
 type YLogger struct {
 	trace   *log.Logger
 	info    *log.Logger
@@ -25,13 +38,13 @@ type YLogger struct {
 // create new YLogger
 // this out is work for all trace/info/warning/error/debug
 func NewYLogger(out io.Writer) *YLogger {
-	flag := log.Ldate | log.Ltime | log.Lmicroseconds | log.Lshortfile
+	flag := log.Ldate | log.Ltime | log.Lmicroseconds
 	ylogger := new(YLogger)
-	ylogger.trace = log.New(out, "\033[32m[TRACE]\033[0m ", flag)
-	ylogger.info = log.New(out, "\033[32m[INFO]\033[0m ", flag)
-	ylogger.warning = log.New(out, "\033[33m[WARNING]\033[0m ", flag)
-	ylogger.err = log.New(out, "\033[31m[ERROR]\033[0m ", flag)
-	ylogger.debug = log.New(out, "\033[32m[DEBUG]\033[0m ", flag)
+	ylogger.trace = log.New(out, "[TRACE] ", flag)
+	ylogger.info = log.New(out, "[INFO] ", flag)
+	ylogger.warning = log.New(out, "[WARNING] ", flag)
+	ylogger.err = log.New(out, "[ERROR] ", flag)
+	ylogger.debug = log.New(out, "[DEBUG] ", flag)
 
 	ylogger.trace_s = false
 	ylogger.info_s = false
@@ -73,17 +86,18 @@ func (this *YLogger) Error(class string, v ...interface{}) {
 }
 
 func (this *YLogger) SetOutput(level string, w io.Writer) {
+	flag := log.Ldate | log.Ltime | log.Lmicroseconds
 	switch level {
 	case "trace":
-		this.trace.SetOutput(w)
+		this.trace = log.New(w, "[TRACE] ", flag)
 	case "debug":
-		this.debug.SetOutput(w)
+		this.debug = log.New(w, "[DEBUG] ", flag)
 	case "info":
-		this.info.SetOutput(w)
+		this.info = log.New(w, "[INFO] ", flag)
 	case "warning":
-		this.warning.SetOutput(w)
+		this.warning = log.New(w, "[WARNING] ", flag)
 	case "error":
-		this.err.SetOutput(w)
+		this.err = log.New(w, "[ERROR] ", flag)
 	}
 }
 

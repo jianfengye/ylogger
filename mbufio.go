@@ -1,20 +1,46 @@
 package ylogger
 
-import (
-	"os"
-)
+import "os"
 
-func NewMBufioYLogger(base string) (*YLogger, error) {
+type MBufioLogger struct {
+	*YLogger
+
+	wTrace   *BufioWriter
+	wDebug   *BufioWriter
+	wInfo    *BufioWriter
+	wWarning *BufioWriter
+	wError   *BufioWriter
+}
+
+func NewMBufioYLogger(base string, sec int) *MBufioLogger {
 	ylogger := NewYLogger(os.Stdout)
 
-	for _, level := range LEVELS {
-		file := base + "." + level
-		w, err := NewBufioWriter(file)
-		if err != nil {
-			return nil, err
-		}
-		ylogger.SetOutput(level, w)
-	}
+	mb := new(MBufioLogger)
+	mb.YLogger = ylogger
 
-	return ylogger, nil
+	mb.wDebug = NewBufioWriter(base+"."+"debug", sec)
+	mb.YLogger.SetOutput("debug", mb.wDebug)
+
+	mb.wTrace = NewBufioWriter(base+"."+"trace", sec)
+	mb.YLogger.SetOutput("trace", mb.wTrace)
+
+	mb.wInfo = NewBufioWriter(base+"."+"info", sec)
+	mb.YLogger.SetOutput("info", mb.wInfo)
+
+	mb.wWarning = NewBufioWriter(base+"."+"warning", sec)
+	mb.YLogger.SetOutput("warning", mb.wWarning)
+
+	mb.wError = NewBufioWriter(base+"."+"error", sec)
+	mb.YLogger.SetOutput("error", mb.wError)
+
+	return mb
+}
+
+func (mb *MBufioLogger) Close() {
+	mb.wDebug.cmd <- 1
+	mb.wTrace.cmd <- 1
+
+	mb.wInfo.cmd <- 1
+	mb.wWarning.cmd <- 1
+	mb.wError.cmd <- 1
 }
